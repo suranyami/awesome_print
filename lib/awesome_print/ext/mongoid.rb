@@ -20,13 +20,22 @@ module AwesomePrint
           cast = :mongoid_class
         elsif object.class.ancestors.include?(::Mongoid::Document)
           cast = :mongoid_document
-        elsif object.is_a?(::BSON::ObjectId)
+        elsif is_bson_id?
           cast = :mongoid_bson_id
         end
       end
       cast
     end
-
+        
+    def is_bson_id?
+      if defined?(::BSON)
+        object.is_a?(::BSON::ObjectId)
+      elsif defined?(Moped::BSON)
+        object.is_a?(Moped::BSON::ObjectId)
+      end
+    end
+    
+    
     # Format Mongoid class object.
     #------------------------------------------------------------------------------
     def awesome_mongoid_class(object)
